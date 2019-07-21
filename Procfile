@@ -1,1 +1,1 @@
-web: guicorn gomjalog.wsgi --log-file-
+web: gunicorn gomjalog.wsgi --log-file -
