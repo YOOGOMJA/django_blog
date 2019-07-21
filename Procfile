@@ -1,0 +1,1 @@
+web: guicorn gomjalog.wsgi --log-file-
