@@ -3,7 +3,7 @@ from .models import Post, Comment
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
-from django.http import JsonResponse
+from django.http import JsonResponse , HttpResponseRedirect
 from django.core import serializers
 
 # Create your views here.
@@ -28,6 +28,30 @@ def detail(req , post_id):
     comments_list = Comment.objects.filter(post = post_id).order_by('-date')
     return render(req, 'detail.html', {'post':post, 'comments':comments_list})
 
+def create_post(req):
+    if req.method == "POST" and req.POST['title'].strip() != "" and req.POST['content'].strip() != "":
+        new_post = Post()
+        new_post.title = req.POST['title'] 
+        new_post.body = req.POST['content']
+        new_post.writer = req.user.username
+        new_post.pub_date = timezone.datetime.now()
+        new_post.save()
+        return HttpResponseRedirect('/blog/%d'%new_post.pk)
+    return render(req , 'post.html' , { 'status' : 'create' })
+
+def update_post(req , post_id):
+    current_post = get_object_or_404(Post , pk=post_id)
+    if req.method == "POST":
+        current_post.title = req.POST['title']
+        current_post.content = req.POST['content']
+        current_post.save()
+        return HttpResponseRedirect('/blog/%d'%post_id)
+    return render(req , 'post.html' , { 'post' : current_post , 'status' : 'update' })
+
+def delete_post(req , post_id):
+    current_post = Post.objects.get(id=post_id)
+    current_post.delete()
+    return redirect('home')
 
 # API
 @csrf_exempt
@@ -63,3 +87,10 @@ def comment_delete(req , comment_id):
     return JsonResponse({
         'message' : 'success',
     }, json_dumps_params = {'ensure_ascii': True})
+
+def comment_delete_not_api(req , comment_id):
+    current_comment = get_object_or_404(Comment , pk=comment_id)
+    related_post = get_object_or_404(Post , pk=current_comment.post.pk)
+    current_comment.delete()
+    return HttpResponseRedirect('/blog/%d'%related_post.pk)
+    

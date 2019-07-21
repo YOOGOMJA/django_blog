@@ -48,12 +48,29 @@
                             >Home <span class="sr-only">(current)</span></a
                         >
                     </li>
+                    
+                    {% if not user.is_authenticated %}
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="/accounts/login">Login</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/accounts/signup">Sign Up</a>
                     </li>
+                    {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{user}}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <a href="{% url 'create_post'%}" class="dropdown-item" >New Post</a>
+                            <a class="dropdown-item" id="logout-btn" href="javascript:$('#logout').submit()">Sign Out</a>
+                            <form id="logout" method="POST" action="{% url 'signout' %}">
+                                {% csrf_token %}
+                            </form>
+                        </div>
+                    </li>
+                    {% endif %}
                 </ul>
                 <form class="form-inline my-2 my-lg-0">
                     <input

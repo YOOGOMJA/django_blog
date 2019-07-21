@@ -1,3 +1,5 @@
+html,body,.content{ min-height : 100%; }
+
 .detail{
     width: 100%;
     padding-top: 56px;
