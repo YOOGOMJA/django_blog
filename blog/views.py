@@ -53,6 +53,17 @@ def delete_post(req , post_id):
     current_post.delete()
     return redirect('home')
 
+def search(req):
+    if req.GET.get('q'):
+        que = req.GET.get('q')
+        variable_column = req.GET.get('search_filter')
+        search_type = 'contains'
+        filter = variable_column + '__' + search_type
+        posts = Post.objects.filter(**{ filter: req.GET.get('q') }).order_by('-pub_date') 
+        return render(req , 'result.html' , {'result' : posts , 'query' : que})
+    else:
+        return redirect('home')    
+
 # API
 @csrf_exempt
 def get_comment(req , post_id):
