@@ -27,6 +27,7 @@ def detail(req , post_id):
     post.save()
     comments_list = Comment.objects.filter(post = post_id).order_by('-date')
 
+    # 글과 관련된 이미지들을 가져옴
     assets = Asset.objects.filter(post = post_id).order_by('upload_date')
 
     return render(req, 'detail.html', {'post':post, 'comments':comments_list , 'assets' : assets})
@@ -40,6 +41,7 @@ def create_post(req):
         new_post.pub_date = timezone.datetime.now()
         new_post.save()
 
+        # 템플릿에서 넘겨받은 이미지를 저장
         new_images = Asset()
         new_images.upload_date = timezone.datetime.now()
         new_images.upload_user = req.user

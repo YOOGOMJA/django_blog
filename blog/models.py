@@ -28,10 +28,15 @@ class Comment(models.Model):
     date = models.DateTimeField('Date published', auto_now=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
 
+# 이미지 관리 모델
 class Asset(models.Model):
+    # 이미지를 업로드한 회원
     upload_user = models.ForeignKey(User , on_delete=models.CASCADE)
+    # 이미지를 업로드한 게시글
     post = models.ForeignKey(Post , on_delete=models.CASCADE , default=None)
+    # 업로드된 날짜
     upload_date = models.DateTimeField('Date published', auto_now=True)
+    # 실제 이미지
     image = models.ImageField(blank=True , upload_to="blog/%y/%m/%d/%H%M%S")
 
 
