@@ -9,7 +9,6 @@ class Post(models.Model):
     pub_date = models.DateTimeField('Date published')
     body = models.TextField()
     user = models.ManyToManyField(User, blank=True)
-
     views = models.IntegerField(default=0)
 
     def __str__(self):
@@ -23,10 +22,16 @@ class Post(models.Model):
         else:
             return self.title
 
-
 class Comment(models.Model):
     writer = models.CharField(max_length=200)
     content = models.TextField()
     date = models.DateTimeField('Date published', auto_now=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
+
+class Asset(models.Model):
+    upload_user = models.ForeignKey(User , on_delete=models.CASCADE)
+    post = models.ForeignKey(Post , on_delete=models.CASCADE , default=None)
+    upload_date = models.DateTimeField('Date published', auto_now=True)
+    image = models.ImageField(blank=True , upload_to="blog/%y/%m/%d/%H%M%S")
+
 

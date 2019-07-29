@@ -17,7 +17,7 @@
 
 
 {% block content %}
-<form class="post" action="{% url 'create_post' %}" method="POST">
+<form class="post" action="{% url 'create_post' %}" method="POST" enctype="multipart/form-data"> 
     {% csrf_token %}
     <div class="detail container">
         <div class="detail-header mt-5">
@@ -34,6 +34,10 @@
             </div>
         </div>
         <hr>
+        <div>
+            <h5>images</h5>
+            <input type="file" name="img1"/>
+        </div>
         <div class="mt-3 mb-3 text-right">
             <a href="/" role="button" class="btn btn-info mb-2">Go to list</a>
             <button type="submit" class="btn btn-primary mb-2">Submit</button>

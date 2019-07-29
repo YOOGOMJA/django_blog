@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post, Comment
+from .models import Post, Comment , Asset
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt
@@ -26,7 +26,10 @@ def detail(req , post_id):
     post.views += 1
     post.save()
     comments_list = Comment.objects.filter(post = post_id).order_by('-date')
-    return render(req, 'detail.html', {'post':post, 'comments':comments_list})
+
+    assets = Asset.objects.filter(post = post_id).order_by('upload_date')
+
+    return render(req, 'detail.html', {'post':post, 'comments':comments_list , 'assets' : assets})
 
 def create_post(req):
     if req.method == "POST" and req.POST['title'].strip() != "" and req.POST['content'].strip() != "":
@@ -36,6 +39,14 @@ def create_post(req):
         new_post.writer = req.user.username
         new_post.pub_date = timezone.datetime.now()
         new_post.save()
+
+        new_images = Asset()
+        new_images.upload_date = timezone.datetime.now()
+        new_images.upload_user = req.user
+        new_images.post = new_post
+        new_images.image = req.FILES['img1']
+        new_images.save()
+
         return HttpResponseRedirect('/blog/%d'%new_post.pk)
     return render(req , 'post.html' , { 'status' : 'create' })
 

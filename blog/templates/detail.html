@@ -93,6 +93,16 @@
     <div class="detail-content mt-5 mb-5">
         {{ post.body }}
     </div>
+    <div class="text-left">
+        <h5>업로드 이미지</h5>
+        <div class="images">
+            {% for asset in assets %}
+            <a href="{{asset.image.url}}" target="_blank">
+                <img style='width : 100px;' src="{{ asset.image.url }}" alt="">
+            </a>
+            {% endfor %}
+        </div>
+    </div>
     <div class="text-right">
         {% if user.is_authenticated %}
             {% if post.writer == user.username %}
